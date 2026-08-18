@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>screensaver</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!--
+    THE TEXT. Edit everything between the two script tags.
+    Plain text / ASCII art, any number of lines. Nothing is escaped except
+    the literal sequence </script>, which must not appear here.
+  -->
+  <script type="text/plain" id="art-source">
+                                                                            ▄      
+                                                                            ▀  
+   ▄▄▄▄███▄▄▄▄   ▄██   ▄   ████████▄   ▄██████▄   ▄██████▄    ▄▄▄▄███▄▄▄▄      ▄█▀▀▀        
+ ▄██▀▀▀███▀▀▀██▄ ███   ██▄ ███   ▀███ ███    ███ ███    ███ ▄██▀▀▀███▀▀▀██▄    ▀███▄
+ ███   ███   ███ ███▄▄▄███ ███    ███ ███    ███ ███    ███ ███   ███   ███    ▄▄▄█▀        
+ ███   ███   ███ ▀▀▀▀▀▀███ ███    ███ ███    ███ ███    ███ ███   ███   ███  
+ ███   ███   ███ ▄██   ███ ███    ███ ███    ███ ███    ███ ███   ███   ███           
+ ███   ███   ███ ███   ███ ███    ███ ███    ███ ███    ███ ███   ███   ███ 
+ ███   ███   ███ ███   ███ ███   ▄███ ███    ███ ███    ███ ███   ███   ███ 
+  ▀█   ███   █▀   ▀█████▀  ████████▀   ▀██████▀   ▀██████▀   ▀█   ███   █▀  
+
+
+                  ___            __    __     __                 
+             ____/ (_)________ _/ /_  / /__  / /_____  ____  ___ 
+            / __  / / ___/ __ `/ __ \/ / _ \/ __/ __ \/ __ \/ _ \
+           / /_/ / (__  ) /_/ / /_/ / /  __/ /_/ /_/ / / / /  __/
+           \__,_/_/____/\__,_/_.___/_/\___/\__/\____/_/ /_/\___/ 
+  </script>
+
+  <canvas id="matrix" aria-hidden="true"></canvas>
+
+  <div id="stage">
+    <pre id="art" aria-hidden="true"></pre>
+  </div>
+
+  <div id="hint" aria-hidden="true">click once and share system audio to drive the spectrum</div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>

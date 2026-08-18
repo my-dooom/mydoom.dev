@@ -1,0 +1,109 @@
+:root {
+  --bg: #0b0b0f;
+  --dim: #2a2f3a;
+  --scramble: #4d5566;
+  --flash: #ffffff;
+  --glow: 0 0 6px currentColor, 0 0 18px currentColor;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* screensaver: purely decorative, nothing is interactive */
+body {
+  pointer-events: none;
+  user-select: none;
+  cursor: none;
+}
+
+#matrix {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.55;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+}
+
+#art {
+  position: relative;
+  font-family: "Iosevka", "JetBrains Mono", "Cascadia Mono", "DejaVu Sans Mono",
+    "Consolas", monospace;
+  font-size: 16px;
+  line-height: 1.12;
+  white-space: pre;
+  letter-spacing: 0;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+#art span {
+  text-shadow: var(--glow);
+}
+
+/* keeps the rain from bleeding through the glyphs */
+#art::before {
+  content: "";
+  position: absolute;
+  inset: -8% -4%;
+  z-index: -1;
+  background: radial-gradient(ellipse at center,
+      rgba(11, 11, 15, 0.92) 40%,
+      transparent 75%);
+}
+
+#hint {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1rem;
+  z-index: 2;
+  font: 12px/1 "Iosevka", "Cascadia Mono", monospace;
+  letter-spacing: 0.08em;
+  color: rgba(180, 220, 200, 0.35);
+  transition: opacity 0.6s ease;
+}
+
+#hint[hidden] {
+  display: none;
+}
+
+/* subtle CRT scanlines + vignette */
+#stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.035) 0px,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px,
+      transparent 3px),
+    radial-gradient(ellipse at center,
+      transparent 55%,
+      rgba(0, 0, 0, 0.55) 100%);
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #stage::after {
+    background: radial-gradient(ellipse at center,
+        transparent 55%,
+        rgba(0, 0, 0, 0.55) 100%);
+  }
+}
