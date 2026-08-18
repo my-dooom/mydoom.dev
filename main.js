@@ -13,6 +13,8 @@ const CONFIG = {
   hue: [120, 300],
   hueSpread: [25, 140],
   fontSize: 16,
+  // frame cap, for weak hosts (a Raspberry Pi panel). 0 = uncapped
+  maxFps: 0,
   // background digital rain
   matrix: {
     enabled: true,
@@ -447,6 +449,12 @@ function pruneRipples(now) {
 
 /* ----------------------------------------------------------------- audio */
 
+// Capture APIs only exist on a secure origin: https, localhost or 127.0.0.1.
+// Served over plain http from another machine, navigator.mediaDevices itself
+// is undefined, so every audio path has to be skipped rather than tried.
+const canCapture = () =>
+  window.isSecureContext && !!navigator.mediaDevices?.getUserMedia;
+
 class AudioReactor {
   constructor(bands) {
     this.cfg = CONFIG.audio;
@@ -481,6 +489,7 @@ class AudioReactor {
 
   async start() {
     if (!this.cfg.enabled || this.cfg.source === "off") return;
+    if (!canCapture()) return; // idle drift takes over
     if (this.cfg.source !== "system") await this.openInput();
   }
 
@@ -562,7 +571,7 @@ class AudioReactor {
   // True system audio, but the browser demands a gesture and a picker where
   // the user has to tick "share audio".
   async captureSystem() {
-    if (!navigator.mediaDevices.getDisplayMedia) return false;
+    if (!navigator.mediaDevices?.getDisplayMedia) return false;
     const now = performance.now();
     // a dismissed picker should not re-prompt on every stray click
     if (now - this.systemTriedAt < this.cfg.systemRetryMs) return false;
@@ -595,6 +604,7 @@ class AudioReactor {
   // called from the click handler, which is what unlocks both APIs
   async onGesture() {
     if (!this.cfg.enabled || this.cfg.source === "off") return;
+    if (!canCapture()) return;
     if (this.ctx?.state === "suspended") await this.ctx.resume();
     if (audio.source === "loopback" || audio.source === "system") return;
     if (this.cfg.source !== "loopback" && (await this.captureSystem())) return;
@@ -935,6 +945,10 @@ const reactor = CONFIG.audio.enabled ? new AudioReactor(grid.width) : null;
 
 const hintEl = document.getElementById("hint");
 hintEl.hidden = !(CONFIG.audio.enabled && CONFIG.audio.hint);
+if (!hintEl.hidden && !canCapture()) {
+  hintEl.textContent =
+    "audio needs a secure origin — open this over https, or on localhost";
+}
 function updateHint() {
   if (hintEl.hidden) return;
   if (audio.source === "system" || audio.source === "loopback") {
@@ -1021,7 +1035,17 @@ function drawIdle(now) {
   }
 }
 
+let lastFrame = -Infinity;
+
 function loop(now) {
+  requestAnimationFrame(loop);
+  if (CONFIG.maxFps > 0) {
+    // a slack of half a frame keeps a 30 cap from landing on every other
+    // 60 Hz tick and running at 20
+    if (now - lastFrame < 1000 / CONFIG.maxFps - 8) return;
+    lastFrame = now;
+  }
+
   reactor?.update(now);
   rain?.step(now);
   pruneRipples(now);
@@ -1054,7 +1078,6 @@ function loop(now) {
 
   drawPointer(now);
   updateHint();
-  requestAnimationFrame(loop);
 }
 
 window.addEventListener("resize", fit);
