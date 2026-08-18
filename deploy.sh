@@ -113,7 +113,7 @@ $TLS_BLOCK
     add_header Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "no-referrer" always;
-    add_header Permissions-Policy "display-capture=(self), microphone=(self), camera=(), geolocation=(), interest-cohort=()" always;
+    add_header Permissions-Policy "display-capture=(), microphone=(), camera=(), geolocation=(), interest-cohort=()" always;
 
     server_tokens off;
 

@@ -1,9 +1,11 @@
 :root {
-  --bg: #0b0b0f;
-  --dim: #2a2f3a;
-  --scramble: #4d5566;
-  --flash: #ffffff;
-  --glow: 0 0 6px currentColor, 0 0 18px currentColor;
+  --bg: #05060a;
+  --dim: #171b24;
+  --scramble: #2e3644;
+  --flash: #93a7b4;
+  /* overwritten every frame by updateBloom(); this is the unlit fallback */
+  --glow: 0 0 7px currentColor, 0 0 26px currentColor,
+    0 0 44px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -26,11 +28,24 @@ body {
   cursor: none;
 }
 
+/* sinks the corners, so the art is the only thing the eye is offered */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(ellipse at center,
+      transparent 30%,
+      rgba(0, 0, 0, 0.55) 85%,
+      rgba(0, 0, 0, 0.8) 100%);
+}
+
 #matrix {
   position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
+  opacity: 0.38;
+  contain: strict;
 }
 
 #stage {
@@ -51,6 +66,9 @@ body {
   letter-spacing: 0;
   transform-origin: center center;
   will-change: transform;
+  /* hundreds of spans change colour every frame and none of it can move the
+     page around them */
+  contain: layout style;
 }
 
 #art span {
@@ -64,7 +82,7 @@ body {
   inset: -8% -4%;
   z-index: -1;
   background: radial-gradient(ellipse at center,
-      rgba(11, 11, 15, 0.92) 40%,
+      rgba(5, 6, 10, 0.95) 40%,
       transparent 75%);
 }
 
@@ -75,11 +93,38 @@ body {
   z-index: 2;
   font: 12px/1 "Iosevka", "Cascadia Mono", monospace;
   letter-spacing: 0.08em;
-  color: rgba(180, 220, 200, 0.35);
+  color: rgba(140, 170, 165, 0.22);
   transition: opacity 0.6s ease;
 }
 
 #hint[hidden] {
+  display: none;
+}
+
+#mute {
+  position: fixed;
+  left: 1.2rem;
+  bottom: 1rem;
+  z-index: 4;
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(140, 170, 165, 0.18);
+  border-radius: 2px;
+  background: rgba(5, 6, 10, 0.5);
+  font: 12px/1 "Iosevka", "Cascadia Mono", monospace;
+  letter-spacing: 0.08em;
+  color: rgba(140, 170, 165, 0.28);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+#mute:hover,
+#mute:focus-visible {
+  color: rgba(180, 220, 215, 0.75);
+  border-color: rgba(140, 170, 165, 0.45);
+}
+
+#mute[hidden] {
   display: none;
 }
 

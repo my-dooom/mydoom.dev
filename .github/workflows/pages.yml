@@ -17,11 +17,6 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
-env:
-  # the share-audio prompt asks a stranger to hand over their screen, which
-  # is a bad look on a public URL. Set to "auto" to keep the analyser.
-  PUBLIC_AUDIO_SOURCE: "off"
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -37,11 +32,6 @@ jobs:
           mkdir -p _site
           cp index.html main.js styles.css _site/
           [ -f CNAME ] && cp CNAME _site/ || true
-
-          if [ "$PUBLIC_AUDIO_SOURCE" != "auto" ]; then
-            grep -q 'source: "auto"' _site/main.js  # fail loudly if CONFIG moved
-            sed -i "s/source: \"auto\"/source: \"$PUBLIC_AUDIO_SOURCE\"/" _site/main.js
-          fi
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
